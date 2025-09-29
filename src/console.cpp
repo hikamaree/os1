@@ -18,8 +18,9 @@ char CON::get_output(){
     return output->get();
 }
 
-void CON::put_input(char c){
-	if(c >= 32 && c <= 126) output->put(c);
+void CON::put_input(char c) {
+    if ((c >= 32 && c <= 126) || c == 9 || c == 10)
+        output->put(c);
     input->put(c);
 }
 
