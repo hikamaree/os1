@@ -9,20 +9,20 @@ ConsoleBuffer::ConsoleBuffer(uint32 size) {
 }
 
 void ConsoleBuffer::put(char c) {
-    opened->wait();
+	opened->wait();
 	mutex1->wait();
 	buffer.addLast(new char(c));
-	mutex1->signal(true);
-    closed->signal(true);
+	mutex1->signal();
+	closed->signal();
 }
 
 char ConsoleBuffer::get() {
-    closed->wait();
+	closed->wait();
 	mutex2->wait();
 	char *p = buffer.removeFirst();
 	char c = *p;
 	delete p;
-	mutex2->signal(true);
-    opened->signal(true);
-    return c;
+	mutex2->signal();
+	opened->signal();
+	return c;
 }

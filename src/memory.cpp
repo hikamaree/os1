@@ -5,6 +5,7 @@
 int MEM::mem_size = 0;
 uint64 MEM::mem_start = 0;
 int* MEM::mem_map = 0;
+
 void MEM::init() {
 	mem_size = ((uint64)HEAP_END_ADDR - (uint64)HEAP_START_ADDR) / MEM_BLOCK_SIZE;
 	mem_start = ((uint64)HEAP_START_ADDR + mem_size * sizeof(int));

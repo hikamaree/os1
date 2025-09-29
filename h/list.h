@@ -1,7 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "../lib/console.h"
 template<typename T> class List {
 	private:
 		struct Elem {

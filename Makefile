@@ -8,13 +8,13 @@ KERNEL_IMG = kernel
 KERNEL_ASM = kernel.asm
 
 LIBS = \
-  ${DIR_LIBS}/hw.lib \
-  ${DIR_LIBS}/mem.lib \
-  ${DIR_LIBS}/console.lib
+  ${DIR_LIBS}/hw.lib
+  # ${DIR_LIBS}/mem.lib \
+  # ${DIR_LIBS}/console.lib
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
-#TOOLPREFIX =
+TOOLPREFIX = riscv64-unknown-elf-
 
 # Try to infer the correct TOOLPREFIX if not set
 ifndef TOOLPREFIX
@@ -134,6 +134,14 @@ qemu: ${KERNEL_IMG}
 qemu-gdb: ${KERNEL_IMG} .gdbinit
 	@echo "*** Now run 'gdb-multiarch' in another window with target remote args 'localhost:${GDBPORT}'." 1>&2
 	${QEMU} ${QEMUOPTS} -S ${QEMUGDB}
+
+PODMAN_IMG = riscv-os:latest
+
+podman:
+	@if ! podman image exists $(PODMAN_IMG); then \
+		podman build -t $(PODMAN_IMG) .; \
+	fi
+	podman run -it --rm --network=host -v $(PWD):/src --workdir /src --user root $(PODMAN_IMG)
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.

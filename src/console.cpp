@@ -5,8 +5,8 @@ ConsoleBuffer* CON::input;
 ConsoleBuffer* CON::output;
 
 void CON::init() {
-    input = new ConsoleBuffer(1024);
-    output = new ConsoleBuffer(1024);
+    input = new ConsoleBuffer(16);
+    output = new ConsoleBuffer(16);
 	TCB::createThread((void(*)(void*))CON::print, nullptr);
 }
 
@@ -19,6 +19,7 @@ char CON::get_output(){
 }
 
 void CON::put_input(char c){
+	if(c >= 32 && c <= 126) output->put(c);
     input->put(c);
 }
 

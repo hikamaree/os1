@@ -15,7 +15,7 @@ class SEM {
 	static SEM* open(unsigned init);
 	static int close(SEM* sem);
 	int wait();
-	int signal(bool print = false);
+	int signal();
 	int timedWait(time_t);
 	int tryWait();
 };

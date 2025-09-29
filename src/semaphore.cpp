@@ -8,29 +8,29 @@ SEM* SEM::open(unsigned init) {
 int SEM::close(SEM* sem) {
 	if(!sem->opened) return -1;
 	while (sem->blocked.peekLast()) {
-        TCB* tcb = sem->blocked.removeFirst();
-        tcb->run = true;
+		TCB* tcb = sem->blocked.removeFirst();
+		tcb->run = true;
 		if(tcb->timer)
 			Sleep::remove_from_sleep(tcb);
 		tcb->timer = false;
-        Scheduler::put(tcb);
-    }
+		Scheduler::put(tcb);
+	}
 	sem->opened = false;
 	return 0;
 }
 
 int SEM::wait() {
 	if(!opened) return -1;
-    count--;
-    if (count < 0) {
+	count--;
+	if (count < 0) {
 		blocked.addLast(TCB::running);
-        TCB::running->run = false;
+		TCB::running->run = false;
 		TCB::yield();
-    }
-    return 0;
+	}
+	return 0;
 }
 
-int SEM::signal(bool print) {
+int SEM::signal() {
 	if(!opened) return -1;
 	count++;
 	if(count <= 0) {
@@ -41,7 +41,6 @@ int SEM::signal(bool print) {
 			Sleep::remove_from_sleep(tcb);
 		tcb->timer = false;
 		Scheduler::put(tcb);
-		if(!print) TCB::yield();
 	}
 	return 0;
 }
@@ -67,13 +66,10 @@ int SEM::timedWait(time_t time) {
 }
 
 int SEM::tryWait() {
-	if(!opened) return -1;
-	count--;
-	if (count < 0) {
-		blocked.addLast(TCB::running);
-		TCB::running->run = false;
-		TCB::yield();
-		return 0;
+	if (!opened) return -1;
+	if (count > 0) {
+		count--;
+		return 1;
 	}
-	return 1;
+	return 0;
 }
